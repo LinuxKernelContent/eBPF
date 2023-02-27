@@ -1,3 +1,6 @@
+/*In this example, there are two writer threads that write values to the buffer and two reader threads that read values from the buffer. The pthread_create() function is used to create each thread, and the pthread_join() function is used to wait for each thread to finish.
+
+Note that the writer_thread() and reader_thread() functions access the buffer using the write_to_buffer() and read_from_buffer() functions, respectively, which are protected by the buffer_mutex mutex to ensure thread safety.*/
 #include <pthread.h>
 #include <stdio.h>
 
