@@ -7,6 +7,3 @@ eBPF was first introduced in Linux kernel version 3.18 and has since become an i
 eBPF has become popular in recent years for its ability to provide observability and tracing capabilities for containers and microservices. It has been adopted by many cloud providers and is used in a variety of open-source and commercial monitoring and observability tools.
 ## Example use case of eBPF
 Suppose you are debugging a performance issue in a production Linux server and you want to find out which processes are causing the highest CPU usage. You can use eBPF to write a simple program that attaches to the Linux scheduler and records the CPU usage of each running process.
-
-
-
