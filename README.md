@@ -8,3 +8,5 @@ eBPF has become popular in recent years for its ability to provide observability
 ## Example use case of eBPF
 Suppose you are debugging a performance issue in a production Linux server and you want to find out which processes are causing the highest CPU usage. You can use eBPF to write a simple program that attaches to the Linux scheduler and records the CPU usage of each running process.
 
+
+
