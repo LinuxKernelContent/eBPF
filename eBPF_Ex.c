@@ -1,22 +1,24 @@
+/*eBPF (extended Berkeley Packet Filter) is a technology that 
+ * allows you to write and load custom programs into the Linux kernel to perform 
+ * various network-related tasks, such as packet filtering, monitoring, and tracing. 
+ * Here's an example of a simple eBPF program and how to load it 
+ * using the bpftool command-line utility:
+ * filename: my_ebpf_program.c
+*/
+
 #include <linux/bpf.h>
-#include <linux/sched.h>
+#include <linux/if_ether.h>
+#include <linux/ip.h>
+#include <linux/in.h>
 
-struct bpf_map_def SEC("maps") cpu_usage = {
-    .type = BPF_MAP_TYPE_HASH,
-    .key_size = sizeof(u32),
-    .value_size = sizeof(u64),
-    .max_entries = 1024,
-};
+SEC("filter")
+int filter(struct __sk_buff *skb) {
+    struct ethhdr *eth = bpf_hdr_pointer(skb);
+    struct iphdr *ip = (struct iphdr *)(eth + 1);
 
-SEC("tracepoint/sched/sched_stat_runtime")
-int trace_sched_stat_runtime(struct pt_regs *ctx) {
-    struct task_struct *task = (struct task_struct *)bpf_get_current_task();
-    u64 *val = bpf_map_lookup_elem(&cpu_usage, &task->pid);
-    if (val) {
-        (*val) += PT_REGS_RC(ctx);
-    } else {
-        u64 usage = PT_REGS_RC(ctx);
-        bpf_map_update_elem(&cpu_usage, &task->pid, &usage, BPF_ANY);
+    if (ip->protocol == IPPROTO_TCP && ip->daddr == htonl(INADDR_LOOPBACK)) {
+        return XDP_DROP;
     }
-    return 0;
+
+    return XDP_PASS;
 }
